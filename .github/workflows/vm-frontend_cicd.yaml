@@ -1,0 +1,26 @@
+name: VM-FRONTEND
+
+on: 
+    push:
+        branches:
+            - main
+jobs:
+    build-image_tag_update:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+            - name: Build Docker Image
+              run: docker build -t acr.azurecr.io/vm-frontend:latest .
+            - name: Push to ACR
+              run: |
+                docker login acr.azurecr.io -u ${{ secrets.AZURE_ACR_USERNAME }} -p ${{ secrets.AZURE_ACR_PASSWORD }}
+                docker push acr.azurecr.io/vm-frontend:latest
+            - name: Update GitOps Repository
+              run: |
+                git clone https://github.com/vamika-store/vm-frontend
+                cd gitops-repo
+                sed -i 's/tag: .*/tag: latest/' charts/vm-frontend/values.yaml
+                git add .
+                git commit -m "Updated frontend image"
+                git push origin main
