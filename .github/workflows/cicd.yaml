@@ -21,6 +21,8 @@ jobs:
               
     Docker-Build_and_Push:
         runs-on: ubuntu-latest
+        needs:
+            - build
         env:
             IMG_NAME: "vamika-frontend:v0.0.1"
             BUILDER_IMAGE: "node:22.12"
