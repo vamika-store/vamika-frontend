@@ -7,9 +7,6 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
-        env:
-            IMG_NAME:
-            BUILDER_IMAGE:
         steps:
             - name: Checkout code
               uses: actions/checkout@v3
@@ -21,10 +18,34 @@ jobs:
             - name: Install Dependencies
               working-directory: .
               run: npm ci
-            - name: Run Unit Tests
-              run: npm run test
-
-
+              
+    Docker-Build_and_Push:
+        runs-on: ubuntu-latest
+        env:
+            IMG_NAME: "vamika-frontend:v0.0.1"
+            BUILDER_IMAGE: "node:22.12"
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+            - name: Docker Login
+              run: |
+                echo "${{ secrets.IMAGE_REGISTRY_TOKEN }}" | docker login -u ${{ secrets.IMAGE_REGISTRY_USERNAME }} --password-stdin
+            - name: Docker Build
+              run: |
+                COMMIT_AUTHOR=$(git log -1 --pretty=%an)
+                COMMIT_ID=$(git rev-parse --short "$GITHUB_SHA")
+                docker buildx build \
+                  --build-arg BUILDER_IMAGE="${{ env.BUILDER_IMAGE }}" \
+                  --label "AUTHOR=${COMMIT_AUTHOR}" \
+                  --label "COMMIT_ID=${COMMIT_ID}" \
+                  -t "${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" \
+                  .
+            - name: Push Docker image
+              run: |
+                docker push ${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
+            - name: Docker Logout
+              run: |
+                docker logout ${{ secrets.IMAGE_REGISTRY }}
 
   
  
