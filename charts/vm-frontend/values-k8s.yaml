@@ -1,0 +1,4 @@
+image:
+  repository: kubevamshi/vamika-frontend
+  tag: latest
+  pullPolicy: Always
