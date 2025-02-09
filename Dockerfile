@@ -1,5 +1,6 @@
 # Step 1: Use the specific Node.js 22.12 image as the base image
-FROM node:22.12
+ARG BUILDER_IMAGE=node:22.12
+FROM ${BUILDER_IMAGE}
 
 # Step 2: Set the working directory inside the container
 WORKDIR /app
