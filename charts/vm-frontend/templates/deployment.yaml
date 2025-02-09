@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: vm-frontend
-          image: "{{ (.Values.image).repository }}/vm-frontend:{{ (.Values.image).tag | default "0.0.1" }}"
+          image: "{{ secrets.IMAGE_REGISTRY  }}/v{{ Values.image }}:{{ (.Values.image).tag | default "0.0.1" }}"
           ports:
             - containerPort: 3000
           {{- with .Values.resources }}
