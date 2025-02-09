@@ -24,7 +24,7 @@ jobs:
         needs:
             - build
         env:
-            IMG_NAME: "vamika-frontend:v0.0.1"
+            IMAGE_NAME: "vamika-frontend:v0.0.1"
             BUILDER_IMAGE: "node:22.12"
         steps:
             - name: Checkout code
