@@ -24,7 +24,7 @@ jobs:
         needs:
             - build
         env:
-            IMAGE_NAME: "vamika-frontend:${{ env.VERSION }}"
+            IMAGE_NAME: "vamika-frontend"
             BUILDER_IMAGE: "node:22.12"
         steps:
             - name: Checkout code
@@ -45,11 +45,11 @@ jobs:
                   --build-arg BUILDER_IMAGE="${{ env.BUILDER_IMAGE }}" \
                   --label "AUTHOR=${COMMIT_AUTHOR}" \
                   --label "COMMIT_ID=${COMMIT_ID}" \
-                  -t "${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}" \
+                  -t "${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}" \
                   .
             - name: Push Docker image
               run: |
-                docker push ${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
+                docker push ${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
             - name: Docker Logout
               run: |
                 docker logout ${{ secrets.IMAGE_REGISTRY }}
