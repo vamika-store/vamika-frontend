@@ -62,7 +62,7 @@ jobs:
                 git config --global  user.email "chvamshikrishna24@gmail.com"
                 git config --global  user.name "vamshireddy24"
                 git commit -am "Updated image tag to version ${{ env.VERSION }}"
-                git push
+                git push origin main
  
 
 
