@@ -30,7 +30,7 @@ jobs:
 
             - name: Generate Version (Based on Timestamp)
               id: set_version
-              run: echo "VERSION=v$(date +%Y-%m%-d%:H%M%S)" >>$GITHUB_ENV
+              run: echo "VERSION=v$(date +%Y-%m-%d:%H%M%S)" >>$GITHUB_ENV
 
             # - name: Docker Login
             #   run: |
