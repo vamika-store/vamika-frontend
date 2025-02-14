@@ -1,24 +1,67 @@
 name: VM-FRONTEND
 
 on: 
-    workflow_dispatch:
+    push:
+        branches:
+            - main
 jobs:
-    build-image_tag_update:
+    build:
         runs-on: ubuntu-latest
-
         steps:
-            - uses: actions/checkout@v2
-            - name: Build Docker Image
-              run: docker build -t acr.azurecr.io/vm-frontend:latest .
-            - name: Push to ACR
+            - name: Checkout code
+              uses: actions/checkout@v3
+            
+            # - name: Setup Node
+            #   uses: actions/setup-node@v3
+            #   with:
+            #     node-versions: '20.x'
+            # - name: Install Dependencies
+            #   working-directory: .
+            #   run: npm ci
+              
+    Docker-Build_and_Push:
+        runs-on: ubuntu-latest
+        needs:
+            - build
+        env:
+            IMAGE_NAME: "vamika-frontend"
+            BUILDER_IMAGE: "node:22.12"
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Generate Version (Based on Timestamp)
+              id: set_version
+              run: echo "VERSION=v1.0.$(date +%s)" >>$GITHUB_ENV
+
+            # - name: Docker Login
+            #   run: |
+            #     echo "${{ secrets.IMAGE_REGISTRY_TOKEN }}" | docker login -u ${{ secrets.IMAGE_REGISTRY_USERNAME }} --password-stdin
+            # - name: Docker Build
+            #   run: |
+            #     COMMIT_AUTHOR=$(git log -1 --pretty=%an)
+            #     COMMIT_ID=$(git rev-parse --short "$GITHUB_SHA")
+            #     docker build \
+            #       --build-arg BUILDER_IMAGE="${{ env.BUILDER_IMAGE }}" \
+            #       --label "AUTHOR=${COMMIT_AUTHOR}" \
+            #       --label "COMMIT_ID=${COMMIT_ID}" \
+            #       -t "${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}" \
+            #       .
+            # - name: Push Docker image
+            #   run: |
+            #     docker push ${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+            # - name: Docker Logout
+            #   run: |
+            #     docker logout ${{ secrets.IMAGE_REGISTRY }}
+
+            - name: Update FluxCD HelmRelease Repository
               run: |
-                docker login acr.azurecr.io -u ${{ secrets.AZURE_ACR_USERNAME }} -p ${{ secrets.AZURE_ACR_PASSWORD }}
-                docker push acr.azurecr.io/vm-frontend:latest
-            - name: Update GitOps Repository
-              run: |
-                git clone https://github.com/vamika-store/vm-frontend
-                cd gitops-repo
-                sed -i 's/tag: .*/tag: latest/' charts/vm-frontend/values.yaml
-                git add .
-                git commit -m "Updated frontend image"
-                git push origin main
+                git clone https://github.com/vamika-store/FluxCD.git
+                cd FluxCD
+                sed -i "s|tag: .*|tag \"${{ env.VERSION }}\"|g" apps/vm-frontend/helmrelease.yaml
+                git config --global  user.email "chvamshikrishna24@gmail.com"
+                git config --global  user.name "vamshireddy24"
+                git add apps/vm-frontend/helmrelease.yaml
+                git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/vamika-store/FluxCD.git
+                git commit -am "Updated image tag to version ${{ env.VERSION }}"
+                git push
