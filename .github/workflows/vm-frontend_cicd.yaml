@@ -1,4 +1,5 @@
-name: VM-FRONTEND
+
+name: Vm-reactjs
 
 on: 
     push:
