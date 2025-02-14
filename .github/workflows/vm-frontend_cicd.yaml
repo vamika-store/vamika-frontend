@@ -61,7 +61,6 @@ jobs:
                 sed -i "s|tag: .*|tag \"${{ env.VERSION }}\"|g" apps/vm-frontend/helmrelease.yaml
                 git config --global  user.email "chvamshikrishna24@gmail.com"
                 git config --global  user.name "vamshireddy24"
-                git add apps/vm-frontend/helmrelease.yaml
                 git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/vamika-store/FluxCD.git
                 git commit -am "Updated image tag to version ${{ env.VERSION }}"
                 git push
