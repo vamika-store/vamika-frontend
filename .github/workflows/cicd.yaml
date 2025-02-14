@@ -11,13 +11,13 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v3
             
-            # - name: Setup Node
-            #   uses: actions/setup-node@v3
-            #   with:
-            #     node-versions: '20.x'
-            # - name: Install Dependencies
-            #   working-directory: .
-            #   run: npm ci
+            - name: Setup Node
+              uses: actions/setup-node@v3
+              with:
+                node-versions: '20.x'
+            - name: Install Dependencies
+              working-directory: .
+              run: npm ci
               
     Docker-Build_and_Push:
         runs-on: ubuntu-latest
@@ -34,25 +34,25 @@ jobs:
               id: set_version
               run: echo "VERSION=v1.0.$(date +%s)" >>$GITHUB_ENV
 
-            # - name: Docker Login
-            #   run: |
-            #     echo "${{ secrets.IMAGE_REGISTRY_TOKEN }}" | docker login -u ${{ secrets.IMAGE_REGISTRY_USERNAME }} --password-stdin
-            # - name: Docker Build
-            #   run: |
-            #     COMMIT_AUTHOR=$(git log -1 --pretty=%an)
-            #     COMMIT_ID=$(git rev-parse --short "$GITHUB_SHA")
-            #     docker build \
-            #       --build-arg BUILDER_IMAGE="${{ env.BUILDER_IMAGE }}" \
-            #       --label "AUTHOR=${COMMIT_AUTHOR}" \
-            #       --label "COMMIT_ID=${COMMIT_ID}" \
-            #       -t "${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}" \
-            #       .
-            # - name: Push Docker image
-            #   run: |
-            #     docker push ${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-            # - name: Docker Logout
-            #   run: |
-            #     docker logout ${{ secrets.IMAGE_REGISTRY }}
+            - name: Docker Login
+              run: |
+                echo "${{ secrets.IMAGE_REGISTRY_TOKEN }}" | docker login -u ${{ secrets.IMAGE_REGISTRY_USERNAME }} --password-stdin
+            - name: Docker Build
+              run: |
+                COMMIT_AUTHOR=$(git log -1 --pretty=%an)
+                COMMIT_ID=$(git rev-parse --short "$GITHUB_SHA")
+                docker build \
+                  --build-arg BUILDER_IMAGE="${{ env.BUILDER_IMAGE }}" \
+                  --label "AUTHOR=${COMMIT_AUTHOR}" \
+                  --label "COMMIT_ID=${COMMIT_ID}" \
+                  -t "${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}" \
+                  .
+            - name: Push Docker image
+              run: |
+                docker push ${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+            - name: Docker Logout
+              run: |
+                docker logout ${{ secrets.IMAGE_REGISTRY }}
 
             - name: Update FluxCD HelmRelease Repository
               run: |
