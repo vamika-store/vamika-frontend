@@ -1,4 +1,10 @@
 replicaCount: 2
+
+image:
+  repository: kubevamshi/vamika-frontend
+  tag: latest
+  pullPolicy: Always
+
 resources:
   requests:
     memory: 100Mi
