@@ -27,32 +27,32 @@ jobs:
             IMAGE_NAME: "vamika-frontend"
             BUILDER_IMAGE: "node:22.12"
         steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
+            # - name: Checkout code
+            #   uses: actions/checkout@v4
 
-            - name: Generate Version (Based on Timestamp)
-              id: set_version
-              run: echo "VERSION=v1.0.$(date +%s)" >>$GITHUB_ENV
+            # - name: Generate Version (Based on Timestamp)
+            #   id: set_version
+            #   run: echo "VERSION=v1.0.$(date +%s)" >>$GITHUB_ENV
 
-            - name: Docker Login
-              run: |
-                echo "${{ secrets.IMAGE_REGISTRY_TOKEN }}" | docker login -u ${{ secrets.IMAGE_REGISTRY_USERNAME }} --password-stdin
-            - name: Docker Build
-              run: |
-                COMMIT_AUTHOR=$(git log -1 --pretty=%an)
-                COMMIT_ID=$(git rev-parse --short "$GITHUB_SHA")
-                docker build \
-                  --build-arg BUILDER_IMAGE="${{ env.BUILDER_IMAGE }}" \
-                  --label "AUTHOR=${COMMIT_AUTHOR}" \
-                  --label "COMMIT_ID=${COMMIT_ID}" \
-                  -t "${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}" \
-                  .
-            - name: Push Docker image
-              run: |
-                docker push ${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-            - name: Docker Logout
-              run: |
-                docker logout ${{ secrets.IMAGE_REGISTRY }}
+            # - name: Docker Login
+            #   run: |
+            #     echo "${{ secrets.IMAGE_REGISTRY_TOKEN }}" | docker login -u ${{ secrets.IMAGE_REGISTRY_USERNAME }} --password-stdin
+            # - name: Docker Build
+            #   run: |
+            #     COMMIT_AUTHOR=$(git log -1 --pretty=%an)
+            #     COMMIT_ID=$(git rev-parse --short "$GITHUB_SHA")
+            #     docker build \
+            #       --build-arg BUILDER_IMAGE="${{ env.BUILDER_IMAGE }}" \
+            #       --label "AUTHOR=${COMMIT_AUTHOR}" \
+            #       --label "COMMIT_ID=${COMMIT_ID}" \
+            #       -t "${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}" \
+            #       .
+            # - name: Push Docker image
+            #   run: |
+            #     docker push ${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+            # - name: Docker Logout
+            #   run: |
+            #     docker logout ${{ secrets.IMAGE_REGISTRY }}
 
             - name: Update values.yaml with new image tag
               run: |
