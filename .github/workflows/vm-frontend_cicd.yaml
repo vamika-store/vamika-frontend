@@ -56,6 +56,8 @@ jobs:
 
             - name: Update FluxCD HelmRelease Repository
               run: |
+                git config user.name "github-actions[bot]"
+                git config user.email "github-actions[bot]@users.noreply.github.com"
                 git clone https://github.com/vamika-store/FluxCD.git
                 cd FluxCD
                 sed -i "s|tag: .*|tag: \"${{ env.VERSION }}\"|g" apps/vm-frontend/helmrelease.yaml
