@@ -69,5 +69,5 @@ jobs:
               run: |
                 git add .
                 git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/vamika-store/vamika-frontend.git
-                git commit -am "Updated image tag to version ${{ env.VERSION }}"
+                git commit -m "Updated image tag to version ${{ env.VERSION }}"
                 git push dev
