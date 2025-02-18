@@ -2,7 +2,9 @@
 name: Vm-reactjs
 
 on: 
-    workflow_dispatch:
+    pull_request:
+        branches:
+            - main
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -57,6 +59,8 @@ jobs:
               run: |
                 git clone https://github.com/vamika-store/vamika-frontend.git
                 cd vamika-frontend
+                git checkout dev
+                git branch
                 sed -i "s|tag: .*|tag: \"${{ env.VERSION }}\"|g" charts/vm-frontend/values.yaml
                 cat charts/vm-frontend/values.yaml
                 git config --global  user.email "chvamshikrishna24@gmail.com"
@@ -66,4 +70,4 @@ jobs:
                 git add .
                 git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/vamika-store/vamika-frontend.git
                 git commit -am "Updated image tag to version ${{ env.VERSION }}"
-                git push
+                git push dev
