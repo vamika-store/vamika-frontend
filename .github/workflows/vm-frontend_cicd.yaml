@@ -5,6 +5,8 @@ on:
     pull_request:
         branches:
             - main
+        paths-ignore:
+            - charts/vm-frontend/values.yaml
 jobs:
     build:
         runs-on: ubuntu-latest
