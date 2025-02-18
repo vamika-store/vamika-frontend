@@ -7,7 +7,7 @@ on:
             - main
     push:
         paths-ignore:
-            - charts/vm-frontend/values.yaml
+            - 'charts/**'
 jobs:
     build:
         runs-on: ubuntu-latest
