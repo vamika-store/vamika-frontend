@@ -69,4 +69,4 @@ jobs:
                 sed -i "s|tag: .*|tag: \"${{ env.VERSION }}\"|g" charts/vm-frontend/values.yaml
                 git add charts/vm-frontend/values.yaml
                 git commit -m "Update frontend image tag to ${{ env.VERSION }} [skip ci]"
-                git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/vamika-store/vamika-frontend.git dev
+                git push https://x-access-token:${{ secrets.GITHUBTOKEN }}@github.com/vamika-store/vamika-frontend.git dev
