@@ -62,9 +62,9 @@ jobs:
                 cd vamika-frontend
                 git config --global user.email "chvamshikrishna217@gmail.com"
                 git config --global user.name "vamshireddy"
-                git checkout ${{ github.ref_name }}
+                git checkout ${{ github.head_ref }}
                 git branch
                 sed -i "s|tag: .*|tag: \"${{ env.VERSION }}\"|g" charts/vm-frontend/values.yaml
                 git add charts/vm-frontend/values.yaml
                 git commit -m "Update frontend image tag to ${{ env.VERSION }} [skip ci]"
-                git push https://x-access-token:${{ secrets.GITHUBTOKEN }}@github.com/vamika-store/vamika-frontend.git ${{ github.ref_name }}
+                git push https://x-access-token:${{ secrets.GITHUBTOKEN }}@github.com/vamika-store/vamika-frontend.git ${{ github.head_ref }}
