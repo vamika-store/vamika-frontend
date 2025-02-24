@@ -5,6 +5,8 @@ FROM ${BUILDER_IMAGE}
 # Step 2: Set the working directory inside the container
 WORKDIR /app
 
+RUN chmod -R 777 /app
+
 # Step 3: Copy package.json and package-lock.json (if it exists) into the container
 COPY package*.json ./
 
