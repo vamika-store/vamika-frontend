@@ -14,6 +14,9 @@ RUN npm install
 # Step 5: Copy the rest of the application code
 COPY . .
 
+# Step 6: Ensure writable directories for tmp and cache
+RUN mkdir -p /tmp /app/node_modules/.cache && chmod -R 777 /tmp /app/node_modules
+
 # Step 7: Expose the port your app will run on
 EXPOSE 3000
 
