@@ -20,7 +20,7 @@ jobs:
                 node-versions: '20.x'
             - name: Install Dependencies
               working-directory: .
-              run: npm ci
+              run: npm install
               
             - name: Install Snyk CLI
               run: npm install -g snyk
