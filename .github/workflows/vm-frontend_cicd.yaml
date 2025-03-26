@@ -81,7 +81,7 @@ jobs:
                 new_version="v$major.$minor.$((patch + 1))"
 
                 # Update the version in Chart.yaml
-                sed -i "s/^version:.*/version: $new_version/" charts/vm-frontend/Chart.yaml
+                sed -i "s|version:.*|version: $new_version"|g" charts/vm-frontend/Chart.yaml
                 sed -i "s|tag: .*|tag: \"${{ env.VERSION }}\"|g" charts/vm-frontend/values.yaml
                 git add charts/vm-frontend/values.yaml && charts/vm-frontend/Chart.yaml
                 git commit -m "Update frontend image tag to ${{ env.VERSION }} [skip ci]"
