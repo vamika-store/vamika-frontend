@@ -83,7 +83,7 @@ jobs:
                 # Update the version in Chart.yaml
                 sed -i "s|version:.*|version: $new_version"|g" charts/vm-frontend/Chart.yaml
                 sed -i "s|tag: .*|tag: \"${{ env.VERSION }}\"|g" charts/vm-frontend/values.yaml
-                git add charts/vm-frontend/values.yaml && charts/vm-frontend/Chart.yaml
+                git add .
                 git commit -m "Update frontend image tag to ${{ env.VERSION }} [skip ci]"
                 git push https://x-access-token:${{ secrets.GITHUBTOKEN }}@github.com/vamika-store/vamika-frontend.git ${{ github.head_ref }}
 
