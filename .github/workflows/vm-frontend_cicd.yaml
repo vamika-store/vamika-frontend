@@ -74,14 +74,10 @@ jobs:
                 git config --global user.name "vamshireddy24"
                 git checkout ${{ github.head_ref }}
                 git branch
-            - name: update chart version
-              run: |
                 current_version=$(grep '^version:' charts/vm-frontend/Chart.yaml | awk '{print $2}' | tr -d 'v')
                 IFS='.' read -r major minor patch <<< "$current_version"
                 new_version="$major.$minor.$((patch + 1))"
                 sed -i "s|version:.*|version: $new_version|g" charts/vm-frontend/Chart.yaml
-            - name: Update values.yaml with new image tag
-              run: |   
                 sed -i "s|tag: .*|tag: \"${{ env.VERSION }}\"|g" charts/vm-frontend/values.yaml
                 git add .
                 git commit -m "Update frontend image tag to ${{ env.VERSION }} [skip ci]"
