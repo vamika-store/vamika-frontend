@@ -74,16 +74,16 @@ jobs:
                 git checkout ${{ github.head_ref }}
                 git branch
                 # Extract the current version from Chart.yaml
-                current_version=$(grep '^version:' charts/reactjs/Chart.yaml | awk '{print $2}' | tr -d 'v')
+                current_version=$(grep '^version:' charts/vm-frontend/Chart.yaml | awk '{print $2}' | tr -d 'v')
 
                 # Increment the patch version
                 IFS='.' read -r major minor patch <<< "$current_version"
                 new_version="v$major.$minor.$((patch + 1))"
 
                 # Update the version in Chart.yaml
-                sed -i "s/^version:.*/version: $new_version/" charts/reactjs/Chart.yaml
+                sed -i "s/^version:.*/version: $new_version/" charts/vm-frontend/Chart.yaml
                 sed -i "s|tag: .*|tag: \"${{ env.VERSION }}\"|g" charts/vm-frontend/values.yaml
-                git add charts/vm-frontend/values.yaml && charts/reactjs/Chart.yaml
+                git add charts/vm-frontend/values.yaml && charts/vm-frontend/Chart.yaml
                 git commit -m "Update frontend image tag to ${{ env.VERSION }} [skip ci]"
                 git push https://x-access-token:${{ secrets.GITHUBTOKEN }}@github.com/vamika-store/vamika-frontend.git ${{ github.head_ref }}
 
