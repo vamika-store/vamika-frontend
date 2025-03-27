@@ -77,7 +77,7 @@ jobs:
                 # Update Chart.yaml with new version
                 current_version=$(grep '^version:' charts/vm-frontend/Chart.yaml | awk '{print $2}' | tr -d 'v')
                 IFS='.' read -r major minor patch <<< "$current_version"
-                new_version="$major.$minor.$((patch + 1))"
+                new_version="v$major.$minor.$((patch + 1))"
                 sed -i "s|version:.*|version: $new_version|g" charts/vm-frontend/Chart.yaml
                 # Update values.yaml with new image tag
                 sed -i "s|tag: .*|tag: \"${{ env.VERSION }}\"|g" charts/vm-frontend/values.yaml
