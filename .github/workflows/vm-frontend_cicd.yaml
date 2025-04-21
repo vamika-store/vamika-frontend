@@ -22,12 +22,12 @@ jobs:
               working-directory: .
               run: npm install
               
-            # - name: Install Snyk CLI
-            #   run: npm install -g snyk
-            # - name: Snyk Dependency Scan
-            #   env:
-            #       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-            #   run: snyk test --all-projects
+            - name: Install Snyk CLI
+              run: npm install -g snyk
+            - name: Snyk Dependency Scan
+              env:
+                  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+              run: snyk test --all-projects
 
             
               
