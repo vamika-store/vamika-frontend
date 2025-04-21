@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useLoaderData, useParams } from 'react-router-dom'
-import Breadcrumb from '../../components/Breadcrumb.js/Breadcrumb';
+import Breadcrumb from '../../components/Breadcrumb/Breadcrumb'
 import content from '../../data/content.json'
 import Rating from '../../components/Rating/Rating';
 import SizeFilter from '../../components/Filters/SizeFilter';
