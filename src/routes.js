@@ -4,7 +4,9 @@ import ProductListPage from "./pages/ProductListPage/ProductListPage";
 import ShopApplicatiponWrapper from "./pages/ShopApplicatiponWrapper";
 import ProductDetails from "./pages/ProductDetailPage/ProductDetails";
 import { loadProductBySlug } from "./routes/products";
-
+import AuthenticationWrapper from "./pages/AuthenticationWrapper";
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
 
 export const router = createBrowserRouter([
     {
@@ -34,4 +36,18 @@ export const router = createBrowserRouter([
         }
       ]
     },
+    {
+      path: "/api/auth",
+      element: <AuthenticationWrapper />,
+      children:[
+        {
+          path: "login",
+          element: <Login />
+        },
+        {
+          path: "register",
+          element: <Register />
+        }
+      ]
+    }
 ]);
