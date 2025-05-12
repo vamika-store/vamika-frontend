@@ -1,4 +1,4 @@
-name: Tag-Based-Build-Deploy
+name: Tag-Based-Build-Deploy-${{on.push.tags}}
 
 on:
   push:
