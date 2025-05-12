@@ -1,0 +1,13 @@
+name: Test Tag Trigger
+
+on:
+  push:
+    tags:
+      - '*-dev'
+      - '*-qa'
+
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Triggered by tag $GITHUB_REF_NAME"
