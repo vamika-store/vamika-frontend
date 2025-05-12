@@ -1,0 +1,86 @@
+name: Tag-Based Build, Test, and Deploy
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger pipeline for tags starting with 'v'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Detect Environment from Tag
+      - name: Detect Environment
+        id: detect-env
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == *-dev ]]; then
+            echo "env=dev" >> $GITHUB_ENV
+          elif [[ "${GITHUB_REF_NAME}" == *-qa ]]; then
+            echo "env=qa" >> $GITHUB_ENV
+          elif [[ "${GITHUB_REF_NAME}" == *-prod ]]; then
+            echo "env=prod" >> $GITHUB_ENV
+          else
+            echo "Invalid tag format. Use -dev, -qa, or -prod suffix."
+            exit 1
+          fi
+          echo "Detected environment: $env"
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-versions: '20.x'
+      - name: Install Dependencies
+        working-directory: .
+        run: npm install
+
+      # Step 3: Build and Push Docker Image
+
+      - name: Generate Version (Based on Timestamp)
+        id: set_version
+        run: echo "VERSION=v1.0.0-$(date +%Y-%m-%d-%H%M%S)" >>$GITHUB_ENV
+
+      - name: Docker Login
+        run: |
+          echo "${{ secrets.IMAGE_REGISTRY_TOKEN }}" | docker login -u ${{ secrets.IMAGE_REGISTRY_USERNAME }} --password-stdin
+      
+      - name: Build and Push Docker Image
+        env:
+          IMAGE_NAME: 'vamika-frontend'
+        run: |
+          COMMIT_AUTHOR=$(git log -1 --pretty=%an)
+          COMMIT_ID=$(git rev-parse --short "$GITHUB_SHA")
+          docker build \
+              --build-arg BUILDER_IMAGE="${{ env.BUILDER_IMAGE }}" \
+              --label "AUTHOR=${COMMIT_AUTHOR}" \
+              --label "COMMIT_ID=${COMMIT_ID}" \
+              -t "${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}" \
+              .
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+      
+      - name: Docker Logout
+        run: |
+          docker logout ${{ secrets.IMAGE_REGISTRY }}
+
+      # Step 4: Update values.yaml for the Target Environment
+      - name: Update values.yaml
+        run: |
+          git config --global user.email "your-email@example.com"
+          git config --global user.name "your-username"
+          git clone https://x-access-token:${{ secrets.GH_PAT }}git@github.com/vamika-store/vamika-frontend.git
+          cd vamika-frontend
+          if [[ "$env" == "dev" ]]; then
+            sed -i "s|tag: .*|tag: \"${GITHUB_REF_NAME}\"|g" charts/vm-frontend/values.yaml
+          elif [[ "$env" == "qa" ]]; then
+            sed -i "s|tag: .*|tag: \"${GITHUB_REF_NAME}\"|g" charts/vm-frontend/values-qa.yaml
+          elif [[ "$env" == "prod" ]]; then
+            sed -i "s|tag: .*|tag: \"${GITHUB_REF_NAME}\"|g" charts/vm-frontend/values-prod.yaml
+          fi
+          git add charts/vm-frontend/values-*.yaml
+          git commit -m "Update image tag to ${GITHUB_REF_NAME} for $env environment"
+          git push
