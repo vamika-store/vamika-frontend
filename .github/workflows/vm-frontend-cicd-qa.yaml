@@ -3,6 +3,9 @@ name: Tag-Based Build, Test, and Deploy
 on:
   push:
     tags:
+      - '*-dev'
+      - '*-qa'
+      - '*-prod'
       - 'v*' # Trigger pipeline for tags starting with 'v'
 
 jobs:
