@@ -2,8 +2,6 @@ name: Tag-Based Build, Test, and Deploy
 
 on:
   push:
-    branch:
-      - main
     tags:
       - '*-dev'
       - '*-qa'
