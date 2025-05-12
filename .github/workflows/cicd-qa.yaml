@@ -23,14 +23,14 @@ jobs:
         with:
           node-version: '20.x'
 
-      # # Step 3: Install dependencies
-      # - name: Install Dependencies
-      #   run: npm install
+      # Step 3: Install dependencies
+      - name: Install Dependencies
+        run: npm install
 
-      # # Step 4: Run Unit Tests
-      # - name: Run Unit Tests
-      #   run: npm run test:unit
-      #   continue-on-error: false # Fail the pipeline if tests fail
+      # Step 4: Run Unit Tests
+      - name: Run Unit Tests
+        run: npm run test:unit
+        continue-on-error: false # Fail the pipeline if tests fail
 
       # # Step 5: Run Integration Tests
       # - name: Run Integration Tests
