@@ -1,12 +1,11 @@
-name: Tag-Based Build, Test, and Deploy
+name: Tag-Based-Build-Deploy
 
 on:
   push:
     tags:
-      - '*-dev'
-      - '*-qa'
-      - '*-prod'
-      - 'v*' # Trigger pipeline for tags starting with 'v'
+      - 'dev'
+      - 'qa'
+      - 'prod'
 
 jobs:
   build-and-test:
@@ -21,11 +20,11 @@ jobs:
       - name: Detect Environment
         id: detect-env
         run: |
-          if [[ "${GITHUB_REF_NAME}" == *-dev ]]; then
+          if [[ "${GITHUB_REF_NAME}" == dev ]]; then
             echo "env=dev" >> $GITHUB_ENV
-          elif [[ "${GITHUB_REF_NAME}" == *-qa ]]; then
+          elif [[ "${GITHUB_REF_NAME}" == qa ]]; then
             echo "env=qa" >> $GITHUB_ENV
-          elif [[ "${GITHUB_REF_NAME}" == *-prod ]]; then
+          elif [[ "${GITHUB_REF_NAME}" == prod ]]; then
             echo "env=prod" >> $GITHUB_ENV
           else
             echo "Invalid tag format. Use -dev, -qa, or -prod suffix."
