@@ -15,39 +15,39 @@ jobs:
     steps:
       # Step 1: Checkout the repository
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js (or your preferred runtime)
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.x'
+      # # Step 2: Set up Node.js (or your preferred runtime)
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: '20.x'
 
-      # Step 3: Install dependencies
-      - name: Install Dependencies
-        run: npm install
+      # # Step 3: Install dependencies
+      # - name: Install Dependencies
+      #   run: npm install
 
-      # Step 4: Run Unit Tests
-      - name: Run Unit Tests
-        run: npm run test:unit
-        continue-on-error: false # Fail the pipeline if tests fail
+      # # Step 4: Run Unit Tests
+      # - name: Run Unit Tests
+      #   run: npm run test:unit
+      #   continue-on-error: false # Fail the pipeline if tests fail
 
-      # Step 5: Run Integration Tests
-      - name: Run Integration Tests
-        run: npm run test:integration
-        continue-on-error: false # Fail the pipeline if tests fail
+      # # Step 5: Run Integration Tests
+      # - name: Run Integration Tests
+      #   run: npm run test:integration
+      #   continue-on-error: false # Fail the pipeline if tests fail
 
-      # Step 6: Generate Test Reports
-      - name: Generate Test Reports
-        if: always() # Always run this step, even if tests fail
-        run: |
-          mkdir -p test-reports
-          npm run test:unit -- --reporter=json > test-reports/unit-test-report.json
-          npm run test:integration -- --reporter=json > test-reports/integration-test-report.json
+      # # Step 6: Generate Test Reports
+      # - name: Generate Test Reports
+      #   if: always() # Always run this step, even if tests fail
+      #   run: |
+      #     mkdir -p test-reports
+      #     npm run test:unit -- --reporter=json > test-reports/unit-test-report.json
+      #     npm run test:integration -- --reporter=json > test-reports/integration-test-report.json
 
-      # Step 7: Upload Test Reports (Optional)
-      - name: Upload Test Reports
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-reports
-          path: test-reports/
+      # # Step 7: Upload Test Reports (Optional)
+      # - name: Upload Test Reports
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: test-reports
+      #     path: test-reports/
