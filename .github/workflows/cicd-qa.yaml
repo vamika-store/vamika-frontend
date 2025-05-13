@@ -3,10 +3,10 @@ name: CI/CD with Automated Testing
 on:
   push:
     branches:
-      - main
+      - dev-1
   pull_request:
     branches:
-      - main
+      - dev-1
 
 jobs:
   build-and-test:
@@ -29,25 +29,22 @@ jobs:
 
       # Step 4: Run Unit Tests
       - name: Run Unit Tests
-        run: npm run test:unit
+        run: npm run test
         continue-on-error: false # Fail the pipeline if tests fail
 
-      # # Step 5: Run Integration Tests
-      # - name: Run Integration Tests
-      #   run: npm run test:integration
-      #   continue-on-error: false # Fail the pipeline if tests fail
+      # Step 5: Generate Test Reports
+      - name: Generate Test Reports
+        if: always() # Always run this step, even if tests fail
+        run: |
+          mkdir -p test-reports
+          jest --json --outputFile=test-reports/test-report.json
+          jest --reporters=jest-junit
+          jest --reporters=jest-html-reporter
 
-      # # Step 6: Generate Test Reports
-      # - name: Generate Test Reports
-      #   if: always() # Always run this step, even if tests fail
-      #   run: |
-      #     mkdir -p test-reports
-      #     npm run test:unit -- --reporter=json > test-reports/unit-test-report.json
-      #     npm run test:integration -- --reporter=json > test-reports/integration-test-report.json
-
-      # # Step 7: Upload Test Reports (Optional)
-      # - name: Upload Test Reports
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: test-reports
-      #     path: test-reports/
+      # Step 6: Upload Test Reports
+      - name: Upload Test Reports
+        if: always() # Always run this step, even if tests fail
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: test-reports/
