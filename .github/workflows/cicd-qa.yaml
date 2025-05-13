@@ -27,19 +27,19 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # # Step 4: Run Unit Tests
-      # - name: Run Unit Tests
-      #   run: npm run test
-      #   continue-on-error: false # Fail the pipeline if tests fail
+      # Step 4: Run Unit Tests
+      - name: Run Unit Tests
+        run: npm run test
+        continue-on-error: false # Fail the pipeline if tests fail
 
-      # # Step 5: Generate Test Reports
-      # - name: Generate Test Reports
-      #   if: always() # Always run this step, even if tests fail
-      #   run: |
-      #     mkdir -p test-reports
-      #     jest --json --outputFile=test-reports/test-report.json
-      #     jest --reporters=jest-junit
-      #     jest --reporters=jest-html-reporter
+      # Step 5: Generate Test Reports
+      - name: Generate Test Reports
+        if: always() # Always run this step, even if tests fail
+        run: |
+          mkdir -p test-reports
+          jest --json --outputFile=test-reports/test-report.json
+          jest --reporters=jest-junit
+          jest --reporters=jest-html-reporter
 
       # # Step 6: Upload Test Reports
       # - name: Upload Test Reports
