@@ -3,14 +3,6 @@ name: Vm-reactjs
 
 on: 
   workflow_dispatch:
-    branches:
-      push:
-         - main
-    # pull_request:
-    #     branches:
-    #         - main
-      paths-ignore:
-             - 'charts/**'
 jobs:
     build:
         runs-on: ubuntu-latest
