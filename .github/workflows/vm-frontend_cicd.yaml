@@ -2,11 +2,7 @@
 name: Vm-reactjs
 
 on: 
-    pull_request:
-        branches:
-            - main
-        paths-ignore:
-            - 'charts/**'
+  workflow_dispatch:
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -20,7 +16,16 @@ jobs:
                 node-versions: '20.x'
             - name: Install Dependencies
               working-directory: .
-              run: npm ci
+              run: npm install
+              
+            # - name: Install Snyk CLI
+            #   run: npm install -g snyk
+            # - name: Snyk Dependency Scan
+            #   env:
+            #       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+            #   run: snyk test --all-projects
+
+            
               
     Docker-Build_and_Push:
         runs-on: ubuntu-latest
@@ -56,6 +61,7 @@ jobs:
             - name: Docker Logout
               run: |
                 docker logout ${{ secrets.IMAGE_REGISTRY }}
+            
             - name: Update values.yaml with new image tag
               run: |
                 git clone https://github.com/vamika-store/vamika-frontend.git
@@ -64,7 +70,20 @@ jobs:
                 git config --global user.name "vamshireddy24"
                 git checkout ${{ github.head_ref }}
                 git branch
+                # Update Chart.yaml with new version
+                current_version=$(grep '^version:' charts/vm-frontend/Chart.yaml | awk '{print $2}' | tr -d 'v')
+                IFS='.' read -r major minor patch <<< "$current_version"
+                new_version="v$major.$minor.$((patch + 1))"
+                sed -i "s|version:.*|version: $new_version|g" charts/vm-frontend/Chart.yaml
+                # Update values.yaml with new image tag
                 sed -i "s|tag: .*|tag: \"${{ env.VERSION }}\"|g" charts/vm-frontend/values.yaml
-                git add charts/vm-frontend/values.yaml
-                git commit -m "Update frontend image tag to ${{ env.VERSION }} [skip ci]"
+                git add .
+                git commit -m "Update frontend image tag to ${{ env.VERSION }} and chart version to $new_version [skip ci]"
                 git push https://x-access-token:${{ secrets.GITHUBTOKEN }}@github.com/vamika-store/vamika-frontend.git ${{ github.head_ref }}
+            - name: Install Snyk CLI
+              run: npm install -g snyk
+            - name: Snyk Docker Image Scan
+              env:
+                  SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+              run: snyk container test "${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}"
+

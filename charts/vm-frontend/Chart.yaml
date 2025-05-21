@@ -1,4 +1,4 @@
 apiVersion: v2
 name: frontend
 description: Example of the chart component for the K8S V2 Platform
-version: 1.0.3
+version: v1.0.11

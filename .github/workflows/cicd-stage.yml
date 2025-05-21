@@ -1,0 +1,42 @@
+name: VM-FRONTEND-Stage
+
+on: 
+  push:
+   branches:
+     - stage
+  pull_request:
+   branches:
+     - stage
+jobs:
+    build:
+        if: |
+           (github.event_name == 'pull_request' && github.base_ref == 'stage' && github.head_ref == 'dev') ||
+           (github.event_name == 'push' && github.ref == 'refs/heads/stage')
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+            
+            - name: Setup Node
+              uses: actions/setup-node@v3
+              with:
+                node-versions: '20.x'
+            - name: Install Dependencies
+              working-directory: .
+              run: npm ci
+              
+    Docker-Build_and_Push:
+        if: github.event_name == 'push' && github.ref == 'refs/heads/qa'
+        runs-on: ubuntu-latest
+        needs:
+            - build
+        env:
+            IMAGE_NAME: "vamika-frontend"
+            BUILDER_IMAGE: "node:22.12"
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Generate Version (Based on Timestamp)
+              id: set_version
+              run: echo "VERSION=v$(date +%Y-%m-%d:%H%M%S)" >>$GITHUB_ENV
