@@ -1,5 +1,5 @@
 # Step 1: Use the specific Node.js 22.12 image as the base image
-ARG BUILDER_IMAGE=node:22.14.0-alpine3.21
+ARG BUILDER_IMAGE=node:22.16.0-alpine3.21
 FROM ${BUILDER_IMAGE}
 
 # Step 2: Set the working directory inside the container
