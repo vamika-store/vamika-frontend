@@ -1,4 +1,4 @@
-name: VM-FRONTEND
+name: VM-FRONTEND-dev
 
 on: 
   push:
