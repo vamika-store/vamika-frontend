@@ -1,0 +1,33 @@
+# Ignore dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Ignore test coverage
+coverage
+
+# Ignore local builds — we'll generate a fresh one
+build
+
+# Ignore system & config files
+.DS_Store
+.env*
+*.log
+*.md
+*.yml
+*.yaml
+*.ts
+*.tsx
+
+# Ignore local dev tools and editors
+.vscode
+.idea
+*.swp
+*.swo
+
+# Ignore Docker and Git files that don’t belong in the container
+Dockerfile
+.dockerignore
+nginx.conf
+.git
+.gitignore
