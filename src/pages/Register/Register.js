@@ -12,7 +12,7 @@ const Register = () => {
     password: '',
     firstName: '',
     lastName: '',
-    phone: '',
+    phoneNumber: '',
   });
   const [error, setError] = useState('');
   const dispatch = useDispatch();
@@ -22,15 +22,19 @@ const Register = () => {
     e.preventDefault();
     setError('');
     dispatch(setLoading(true));
-    registerApi(values).then((res) => {
-      if(res?.token) {
+    registerApi(values).then(res => {
+      if(res?.code === 200) {
         setEnableVerify(true);
       }
       else {
         setError("something went wrong, please try again later");
       }
     }).catch((err) => {
-      setError("Invalid username or password");
+      setError(
+        err?.response?.data?.message ||
+        err?.message ||
+        "Something went wrong, please try again later"
+      );
     }).finally(() => {
       dispatch(setLoading(false));
     });
@@ -38,9 +42,9 @@ const Register = () => {
 
   const handleOnChange = useCallback((e) => {
     e.persist();
-    setValues((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value
+    setValues(values => ({
+      ...values,
+      [e.target.name]: e.target?.value,
     }));
   },[]);
 
@@ -55,11 +59,11 @@ const Register = () => {
     
       <div className='pt-4'>
         <form onSubmit={onSubmit} autoComplete='off'>
-          <input type="email" name='email' value={values?.userName} onChange={handleOnChange} placeholder='Email address' className='h-[40px] mt-4 w-full border p-2 border-gray-400' required/>
-          <input type="password" name='password' value={values?.password} onChange={handleOnChange} placeholder='Password' className='h-[40px] mt-4 w-full border p-2 border-gray-400' required/>
-          <input type="text" name='firstName' value={values?.firstName} onChange={handleOnChange} placeholder='First Name' className='h-[40px] mt-4 w-full border p-2 border-gray-400' required/>
-          <input type="text" name='lastName' value={values?.lastName} onChange={handleOnChange} placeholder='Last Name' className='h-[40px] mt-4 w-full border p-2 border-gray-400' required/>
-          <input type="phone number" name='phone' value={values?.phone} onChange={handleOnChange} placeholder='Phone Number' className='h-[40px] mt-4 w-full border p-2 border-gray-400' required/>
+          <input type="email" name='email' value={values.email} onChange={handleOnChange} placeholder='Email address' className='h-[40px] mt-4 w-full border p-2 border-gray-400' required/>
+          <input type="password" name='password' value={values.password} onChange={handleOnChange} placeholder='Password' className='h-[40px] mt-4 w-full border p-2 border-gray-400' required/>
+          <input type="text" name='firstName' value={values.firstName} onChange={handleOnChange} placeholder='First Name' className='h-[40px] mt-4 w-full border p-2 border-gray-400' required/>
+          <input type="text" name='lastName' value={values.lastName} onChange={handleOnChange} placeholder='Last Name' className='h-[40px] mt-4 w-full border p-2 border-gray-400' required/>
+          <input type="text" name='phoneNumber' value={values.phoneNumber} onChange={handleOnChange} placeholder='Phone Number' className='h-[40px] mt-4 w-full border p-2 border-gray-400' required/>
           <button className='border w-full rounded-lg h-[48px] mb-4 bg-black text-white mt-4 hover:opacity-80'>Sign Up</button>
         </form>
       </div>
