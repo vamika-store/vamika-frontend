@@ -2,11 +2,7 @@
 name: Vm-reactjs
 
 on: 
-    pull_request:
-        branches:
-            - main
-        paths-ignore:
-            - 'charts/**'
+   workflow_dispatch:
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -59,6 +55,10 @@ jobs:
                   --label "COMMIT_ID=${COMMIT_ID}" \
                   -t "${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}" \
                   .
+
+            - name: docker images 
+              run: |
+                docker images
             - name: Push Docker image
               run: |
                 docker push ${{ secrets.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}

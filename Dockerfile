@@ -1,24 +1,34 @@
-# Step 1: Use the specific Node.js 22.12 image as the base image
-ARG BUILDER_IMAGE=node:22.14.0-alpine3.21
-FROM ${BUILDER_IMAGE}
+# --- Stage 1: Build React app ---
+FROM node:22.14.0-alpine3.21 AS builder
 
-# Step 2: Set the working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# Step 3: Copy package.json and package-lock.json (if it exists) into the container
+# Copy package files and install dependencies
 COPY package*.json ./
+RUN npm ci
 
-# Step 4: Install the app dependencies
-RUN npm install
-
-# Step 5: Copy the rest of the application code
+# Copy rest of the code
 COPY . .
 
-# Step 6: Ensure writable directories for tmp and cache
-RUN mkdir -p /tmp /app/node_modules/.cache && chmod -R 777 /tmp /app/node_modules
+# Build static files for production
+RUN npm run build
 
-# Step 7: Expose the port your app will run on
+
+# --- Stage 2: Serve static files using 'serve' ---
+FROM node:22.14.0-alpine3.21
+
+# Install 'serve' globally
+RUN npm install -g serve
+
+# Set working directory
+WORKDIR /app
+
+# Copy build output from builder
+COPY --from=builder /app/build .
+
+# Expose default port
 EXPOSE 3000
 
-# Step 8: Run the app
-CMD ["npm", "start"]
+# Serve static files
+CMD ["serve", "-s", ".", "-l", "3000"]

@@ -1,5 +1,5 @@
 # Getting Started with Create React App
-
+i have implemented dev and stage branches for deployment 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
