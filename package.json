@@ -20,7 +20,7 @@
 		"react-router-dom": "^7.5.2",
 		"react-scripts": "^5.0.1",
 		"serialize-javascript": "^6.0.2",
-		"snyk": "^1.1296.0",
+		"snyk": "^1.1297.3",
 		"web-vitals": "^4.2.4"
 	},
 	"scripts": {
