@@ -3,7 +3,7 @@
 import { jwtDecode } from "jwt-decode";
 
 export const isTokenValid = () => {
-    const token = localStorage.getItem("jwtToken");
+    const token = localStorage.getItem("authToken");
     if (!token) return false;
     try {
         const decoded = jwtDecode(token);
@@ -21,5 +21,9 @@ export const saveToken = (token) => {
 }
 
 export const logout = () => {
-    localStorage.clear();
+    localStorage.removeItem("authToken");
+}
+
+export const getToken = () => {
+    return localStorage.getItem("authToken");
 }

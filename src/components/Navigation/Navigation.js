@@ -2,9 +2,13 @@ import React from 'react'
 import Wishlist from '../common/Wishlist'
 import AccountIcon from '../common/AccountIcon'
 import CartIcon from '../common/CartIcon'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { countCartItems } from '../../store/features/cart'
 
 const Navigation = ({variant="default"}) => {
+  const cartLength = useSelector(countCartItems)
+  const navigate = useNavigate();
   return (
     <nav className='flex items-center py-4 px-8 justify-between gap-8 custom-nav'>
     <div className='flex items-left  gap-6'>
@@ -37,9 +41,11 @@ const Navigation = ({variant="default"}) => {
         {/*Action Item icons */}
         {variant === "default" &&
         <ul className='flex gap-8'>
-            <li><Link to= '/Wishlist'><Wishlist/></Link></li>
-            <li><Link to= '/api/auth/'><AccountIcon/></Link></li>
-            <li><Link to='/cart-items'><CartIcon/></Link></li>
+            <li><button onClick={() => navigate('/Wishlist')}><Wishlist/></button></li>
+            <li><button onClick={() => navigate('/account-details')}><AccountIcon/></button></li>
+            <li><Link to='/cart-items' className='flex flex-wrap'><CartIcon/>
+            {cartLength > 0 && <div className='absolute ml-6 inline-flex items-center justify-center w-6 h-6 bg-black text-white rounded-full border-2 text-xs border-white'>{cartLength}</div>}
+            </Link></li>
         </ul>
         }
         {variant === "auth" &&
