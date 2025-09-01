@@ -41,7 +41,7 @@ const Navigation = ({variant="default"}) => {
         {/*Action Item icons */}
         {variant === "default" &&
         <ul className='flex gap-8'>
-            <li><button onClick={() => navigate('/Wishlist')}><Wishlist/></button></li>
+            <li><button><Wishlist/></button></li>
             <li><button onClick={() => navigate('/account-details')}><AccountIcon/></button></li>
             <li><Link to='/cart-items' className='flex flex-wrap'><CartIcon/>
             {cartLength > 0 && <div className='absolute ml-6 inline-flex items-center justify-center w-6 h-6 bg-black text-white rounded-full border-2 text-xs border-white'>{cartLength}</div>}
